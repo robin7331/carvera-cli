@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "carvera-cli"
+version = "0.1.0"
+description = "Manage G-code projects on a Carvera CNC touchscreen HMI over SSH, with an agent skill"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+carvera = "carvera_cli.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/carvera_cli"]
