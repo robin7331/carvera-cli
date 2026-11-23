@@ -44,6 +44,9 @@ carvera ls "Front panel"
 carvera rm "Front panel" roughing.nc     # remove a file; `carvera rm "Front panel"` removes an empty project
 carvera status                           # HMI online? controller running? machine connected? pendant?
 carvera screenshot hmi.png               # what the HMI screen shows (needs grim + Wayland on the HMI)
+carvera config get coordinate.anchor1_x coordinate.anchor1_y   # machine config values (read-only)
+carvera config dump                      # all of /sd/config.txt as key -> value
+carvera machine info                     # model, firmware, connection, recent errors
 ```
 
 Put `--json` before the subcommand for machine-readable output
@@ -68,6 +71,20 @@ carvera skill uninstall
 `status` reads the HMI side without touching the machine: whether a `carveracontroller` process
 runs, the last connection event in the controller's Kivy log (`~/.kivy/logs`), the reported firmware
 version, USB serial devices, and whether an XHC WHB04B/LHB04B pendant receiver is plugged in.
+
+## Reading the machine
+
+`config get`, `config dump` and `machine info` are read-only and send nothing to the machine. The
+controller holds the machine's only link (USB serial) and has no API or plugin hook. But on every
+connect it downloads `/sd/config.txt` into its temp directory
+(`/tmp/tmpXXXX/config_<connection>.txt`), and it logs every command it sends and most replies to
+`~/.kivy/logs`. These commands read those two files, so they work while the controller runs, even
+mid-job. If the log shows a `config-set` after the download, `config get` returns the new value with
+a warning; after `config-restore` / `config-default` it refuses (`config_stale`) until the machine
+is reconnected.
+
+Live position, work offsets, active tool and alarm state are only in status replies that the
+controller neither logs nor exposes, so `machine info` doesn't report them. Use `carvera screenshot`.
 
 ## License
 
