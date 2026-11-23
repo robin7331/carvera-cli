@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "carvera-cli"
-version = "0.1.0"
+version = "0.2.0"
 description = "Manage G-code projects on a Carvera CNC touchscreen HMI over SSH, with an agent skill"
 readme = "README.md"
 license = "MIT"
